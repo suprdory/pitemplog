@@ -14,7 +14,7 @@ function plot(data){
 }
 
 
-csv("/data/temp.csv").then(function(data) {
+csv("temp.csv").then(function(data) {
     data.forEach(function(d) {
     //   d.temp = +d.temp;
     d.x=d.x.substring(0,19)
