@@ -1,95 +1,53 @@
-<head>
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.js"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.css" rel="stylesheet" type="text/css" />
-  <link rel="stylesheet" href="visjs.css">
-</head>
+<!DOCTYPE HTML>
+<html>
 
-<h2>Graph2d | Axis Titles and Styling</h2>
-<div style="width: 800px; font-size: 14px; text-align: justify">
-  <table>
-    <tbody>
-      <tr>
-        <td>
-          This example shows setting a title for the left and right axis.
-          Optionally the example allows the user to show icons and labels on the
-          left and right axis.
-        </td>
-        <td>
-          <table>
-            <tbody>
-              <tr>
-                <td>
-                  <input
-                    type="button"
-                    onclick="showIcons(true)"
-                    value="Show Icons"
-                  />
-                </td>
-                <td>
-                  <input
-                    type="button"
-                    onclick="showIcons(false)"
-                    value="Hide Icons"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <input
-                    type="button"
-                    onclick="showTitle('left', true)"
-                    value="Show Left Title"
-                  />
-                </td>
-                <td>
-                  <input
-                    type="button"
-                    onclick="showTitle('left', false)"
-                    value="Hide Left Title"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <input
-                    type="button"
-                    onclick="showTitle('right', true)"
-                    value="Show Right Title"
-                  />
-                </td>
-                <td>
-                  <input
-                    type="button"
-                    onclick="showTitle('right', false)"
-                    value="Hide Right Title"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <input
-                    type="button"
-                    onclick="styleTitle('left')"
-                    value="Color Left Title"
-                  />
-                </td>
-                <td>
-                  <input
-                    type="button"
-                    onclick="styleTitle('right')"
-                    value="Color Right Title"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+<head>
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+  <meta content="utf-8" http-equiv="encoding">
+  <title>Graph2d | Basic Example</title>
+
+  <style type="text/css">
+    body, html {
+      font-family: sans-serif;
+    }
+  </style>
+
+  <script src="/dist/vis.js"></script>
+  <link href="/dist/vis.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<h2>Graph2d | Basic Example</h2>
+<div style="width:700px; font-size:14px; text-align: justify;">
+  This example shows the most basic functionality of the vis.js Graph2d module. An array or a vis.Dataset can be used as input.
+  In the following examples we'll explore the options Graph2d offest for customization. This example uses all default settings.
+  There are 10 predefined styles that will be cycled through automatically when you add different groups. Alternatively you can
+  create your own styling.
+  <br /><br />
+  Graph2d is built upon the framework of the newly refactored timeline. A lot of the timeline options will also apply to Graph2d.
+  In these examples however, we will focus on what's new in Graph2d!
 </div>
 <br />
 <div id="visualization"></div>
-<script src=visjs.js></script>
 
+<script type="text/javascript">
+
+  var container = document.getElementById('visualization');
+  var items = [
+    {x: '2014-06-11', y: 10},
+    {x: '2014-06-12', y: 25},
+    {x: '2014-06-13', y: 30},
+    {x: '2014-06-14', y: 10},
+    {x: '2014-06-15', y: 15},
+    {x: '2014-06-16', y: 30}
+  ];
+
+  var dataset = new vis.DataSet(items);
+  var options = {
+    start: '2014-06-10',
+    end: '2014-06-18'
+  };
+  var graph2d = new vis.Graph2d(container, dataset, options);
+
+</script>
+</body>
+</html>

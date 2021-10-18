@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="visjs.css">
+</head>
+
+<body>
+<h2>Graph2d | Axis Titles and Styling</h2>
+<div style="width: 800px; font-size: 14px; text-align: justify">
+  <table>
+    <tbody>
+      <tr>
+        <td>
+          This example shows setting a title for the left and right axis.
+          Optionally the example allows the user to show icons and labels on the
+          left and right axis.
+        </td>
+        <td>
+          <table>
+            <tbody>
+              <tr>
+                <td>
+                  <input
+                    type="button"
+                    onclick="showIcons(true)"
+                    value="Show Icons"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="button"
+                    onclick="showIcons(false)"
+                    value="Hide Icons"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <input
+                    type="button"
+                    onclick="showTitle('left', true)"
+                    value="Show Left Title"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="button"
+                    onclick="showTitle('left', false)"
+                    value="Hide Left Title"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <input
+                    type="button"
+                    onclick="showTitle('right', true)"
+                    value="Show Right Title"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="button"
+                    onclick="showTitle('right', false)"
+                    value="Hide Right Title"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <input
+                    type="button"
+                    onclick="styleTitle('left')"
+                    value="Color Left Title"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="button"
+                    onclick="styleTitle('right')"
+                    value="Color Right Title"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<br />
+<div id="visualization"></div>
+</body>
+<script src=visjs.js></script>
+</html>
