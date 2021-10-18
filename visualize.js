@@ -14,28 +14,36 @@ function plot(items){
     var graph2d = new vis.Graph2d(container, items, options);
 }
 
-function read2ndsource(){
-    csv("temp2.csv").then(function(data) {
+function read3rdsource(){
+    csv("temp0.csv").then(function(data) {
       data.forEach(function(d) {
       //   d.temp = +d.temp;
       d.x=d.x.substring(0,19)
-      d.group=2
+      d.group=3
       });
       items=items.concat(data); 
       plot(items);
     });
   }
 
+function read2ndsource(){
+    csv("temp2.csv").then(function(data) {
+      data.forEach(function(d) {
+      d.x=d.x.substring(0,19)
+      d.group=2
+      });
+      items=items.concat(data); 
+      read3rdsource();
+    });
+  }
+
 csv("temp.csv").then(function(data) {
     data.forEach(function(d) {
-    //   d.temp = +d.temp;
+
     d.x=d.x.substring(0,19)
     d.group=1
     });
-    // console.log(data[0])
     items=items.concat(data); 
-    // console.log(items[0])
-    // plot(items);
     read2ndsource();
   });
 
