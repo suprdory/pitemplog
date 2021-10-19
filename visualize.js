@@ -4,14 +4,36 @@ var items = []
 
 function plot(items){
     // var dataset = new vis.DataSet(items);
+    var groups = new vis.DataSet();
+    groups.add({
+        id: 1,
+        content: 'raspi',
+        // Optional: a field 'visible'
+        // Optional: a field 'className'
+      })
+      groups.add({
+        id: 2,
+        content: 'raspi2',
+        // Optional: a field 'visible'
+        // Optional: a field 'className'
+      })
+      groups.add({
+        id: 3,
+        content: 'pizero',
+        visible: true,
+        // Optional: a field 'visible'
+        // Optional: a field 'className'
+      });
+
     var options = {
         drawPoints: false,
         interpolation: false,
+        legend: { left: { position: "bottom-left" } }
     // start: '2014-06-10',
     // end: '2014-06-18'
     };
     // console.log(items)
-    var graph2d = new vis.Graph2d(container, items, options);
+    var graph2d = new vis.Graph2d(container, items, groups, options);
 }
 
 function read3rdsource(){
