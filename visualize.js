@@ -24,6 +24,14 @@ function plot(items){
         // Optional: a field 'visible'
         // Optional: a field 'className'
       });
+      groups.add({
+        id: 4,
+        content: 'audiopi',
+        visible: true,
+        // Optional: a field 'visible'
+        // Optional: a field 'className'
+      });
+
 
     var options = {
         drawPoints: false,
@@ -36,6 +44,19 @@ function plot(items){
     var graph2d = new vis.Graph2d(container, items, groups, options);
 }
 
+
+function read4thsource(){
+  csv("temp3.csv").then(function(data) {
+    data.forEach(function(d) {
+    //   d.temp = +d.temp;
+    d.x=d.x.substring(0,19)
+    d.group=3
+    });
+    items=items.concat(data); 
+    plot(items);
+  });
+}
+
 function read3rdsource(){
     csv("temp0.csv").then(function(data) {
       data.forEach(function(d) {
@@ -44,7 +65,7 @@ function read3rdsource(){
       d.group=3
       });
       items=items.concat(data); 
-      plot(items);
+      read4thsource();
     });
   }
 
