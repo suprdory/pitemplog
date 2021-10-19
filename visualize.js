@@ -50,7 +50,7 @@ function read4thsource(){
     data.forEach(function(d) {
     //   d.temp = +d.temp;
     d.x=d.x.substring(0,19)
-    d.group=3
+    d.group=4
     });
     items=items.concat(data); 
     plot(items);
