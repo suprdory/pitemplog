@@ -47,9 +47,9 @@ function plot(items){
 
 
 function read4thsource(){
-  csv("temp3.csv").then(function(data) {
+  csv("temp_audiopi_1min.csv").then(function(data) {
     data.forEach(function(d) {
-    //   d.temp = +d.temp;
+      // d.temp = +d.temp;
     d.x=d.x.substring(0,19)
     d.group='audiopi'
     });
@@ -59,19 +59,24 @@ function read4thsource(){
 }
 
 function read3rdsource(){
-    csv("temp0.csv").then(function(data) {
+    csv("temp_pizero_1min.csv").then(function(data) {
       data.forEach(function(d) {
-      //   d.temp = +d.temp;
+      d.y = +d.y;
+      // if (d.y == 0){
+      //   d.y=null
+      //   // d.x=null
+      // }
       d.x=d.x.substring(0,19)
       d.group='pizero'
       });
+      console.log(data)
       items=items.concat(data); 
       read4thsource();
     });
   }
 
 function read2ndsource(){
-    csv("temp2.csv").then(function(data) {
+    csv("temp_raspi2_1min.csv").then(function(data) {
       data.forEach(function(d) {
       d.x=d.x.substring(0,19)
       d.group='raspi2'
@@ -81,7 +86,7 @@ function read2ndsource(){
     });
   }
 
-csv("temp.csv").then(function(data) {
+csv("temp_raspi_1min.csv").then(function(data) {
     data.forEach(function(d) {
 
     d.x=d.x.substring(0,19)
