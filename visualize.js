@@ -35,11 +35,11 @@ function plot(items){
 
     var options = {
       defaultGroup: "",
-        drawPoints: false,
-        interpolation: false,
-        legend: { left: { position: "bottom-left" } }
-    // start: '2014-06-10',
-    // end: '2014-06-18'
+      drawPoints: false,
+      interpolation: false,
+      legend: { left: { position: "bottom-left" } },
+      start: Date.now()-1000*3600*24,
+      end: Date.now()+1000*3600*1,
     };
     // console.log(items)
     var graph2d = new vis.Graph2d(container, items, groups, options);
