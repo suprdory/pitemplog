@@ -34,6 +34,7 @@ function plot(items){
 
 
     var options = {
+      defaultGroup: "",
         drawPoints: false,
         interpolation: false,
         legend: { left: { position: "bottom-left" } }
@@ -50,7 +51,7 @@ function read4thsource(){
     data.forEach(function(d) {
     //   d.temp = +d.temp;
     d.x=d.x.substring(0,19)
-    d.group=4
+    d.group='audiopi'
     });
     items=items.concat(data); 
     plot(items);
@@ -62,7 +63,7 @@ function read3rdsource(){
       data.forEach(function(d) {
       //   d.temp = +d.temp;
       d.x=d.x.substring(0,19)
-      d.group=3
+      d.group='pizero'
       });
       items=items.concat(data); 
       read4thsource();
@@ -73,7 +74,7 @@ function read2ndsource(){
     csv("temp2.csv").then(function(data) {
       data.forEach(function(d) {
       d.x=d.x.substring(0,19)
-      d.group=2
+      d.group='raspi2'
       });
       items=items.concat(data); 
       read3rdsource();
@@ -84,7 +85,7 @@ csv("temp.csv").then(function(data) {
     data.forEach(function(d) {
 
     d.x=d.x.substring(0,19)
-    d.group=1
+    d.group='raspi'
     });
     items=items.concat(data); 
     read2ndsource();
