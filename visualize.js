@@ -39,7 +39,7 @@ function plot(items){
   }
 
 
-var url='https://meow.suprdory.com:8001/dict'
+var url='http://meow.suprdory.com:8001/dict'
 fetch(url)
   .then(response => response.json())
   // .then(data => console.log(data))
