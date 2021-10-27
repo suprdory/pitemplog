@@ -3,28 +3,6 @@ var container = document.getElementById('visualization');
 var items = []
 
 function plot(items){
-    // var dataset = new vis.DataSet(items);
-    var groups = new vis.DataSet();
-    groups.add({
-        id: 1,
-        content: 'raspi',
-      })
-      groups.add({
-        id: 2,
-        content: 'raspi2',
-      })
-      groups.add({
-        id: 3,
-        content: 'pizero',
-        visible: true,
-      });
-      groups.add({
-        id: 4,
-        content: 'audiopi',
-        visible: true,
-      });
-
-
     var options = {
       defaultGroup: "",
       drawPoints: false,
@@ -33,8 +11,6 @@ function plot(items){
       start: Date.now()-1000*3600*24,
       end: Date.now()+1000*3600*1,
     };
-    // console.log(items)
-    // var graph2d = new vis.Graph2d(container, items, groups, options);
     var graph2d = new vis.Graph2d(container, items, options);
   }
 
