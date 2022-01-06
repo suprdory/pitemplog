@@ -10,6 +10,7 @@ function plot(items){
       legend: { left: { position: "bottom-left" } },
       start: Date.now()-1000*3600*24,
       end: Date.now()+1000*3600*1,
+      graphHeight: "600px",
     };
     var graph2d = new vis.Graph2d(container, items, options);
   }
