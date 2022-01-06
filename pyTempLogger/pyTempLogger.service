@@ -1,0 +1,11 @@
+[Unit]
+Description=Record CPU temp every 15 secs in log file
+After=multi-user.target
+ 
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /home/suprdory/projects/piTempLog/pyTempLogger/writeCPUTempLog.py
+Restart=on-failure
+ 
+[Install]
+WantedBy=multi-user.target

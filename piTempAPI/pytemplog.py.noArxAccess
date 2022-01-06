@@ -1,0 +1,57 @@
+import sys, os
+import pandas as pd
+
+def combine2dict():
+    dir ='/net/projects/templog/data'
+    pinames = ['raspi', 'raspi2','audiopi', 'pizero']
+    # pinames = ['pizero']
+    fnames = ['temp_'+ piname + '.log' for piname in pinames]
+
+    dfs=[]
+    for fname,piname in zip(fnames,pinames):
+        print('Reading:', fname)
+        fpath=os.path.join(dir,fname)
+        df=pd.read_csv(
+            fpath,
+            parse_dates=['x'],
+            index_col=['x']
+        )
+
+        df=df.resample('1min').mean().ffill()
+        df['group'] = piname
+
+
+        df1h = df.iloc[-60:, :].copy()
+        df1h['falseindex'] = 0
+        df1h['x'] = df1h.index
+        df1h.set_index('falseindex', inplace=True)
+        dfs.append(df1h)
+        
+        df1d=df.iloc[-1440:-60,:].copy()
+        df1d['falseindex'] = 0
+        df1d = df1d.resample('2min').mean().ffill()
+        df1d['group'] = piname
+        df1d['x'] = df1d.index
+        df1d.set_index('falseindex',inplace=True)
+        dfs.append(df1d)
+
+        df7d = df.iloc[-7*1440:-1440, :].copy()
+        df7d['falseindex'] = 0
+        df7d = df7d.resample('15min').mean().ffill()
+        df7d['group'] = piname
+        df7d['x'] = df7d.index
+        df7d.set_index('falseindex', inplace=True)
+        dfs.append(df7d)
+
+        dfe = df.iloc[:-7*1440, :].copy()
+        dfe['falseindex'] = 0
+        dfe = dfe.resample('60min').mean().ffill()
+        dfe['group'] = piname
+        dfe['x'] = dfe.index
+        dfe.set_index('falseindex', inplace=True)
+        dfs.append(dfe)
+
+
+    df=pd.concat(dfs,ignore_index=False)
+    dfd=df.to_dict(orient='records')
+    return(dfd)
