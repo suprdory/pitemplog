@@ -1,4 +1,7 @@
-temp.csv
-temp0.csv
-temp2.csv
-temp3.csv
+
+piTempAPI/.venv/
+piTempAPI/__pycache__/
+pyTempLogger/.venv/
+pyTempLogger/.vscode/
+pyTempLogger/temp.log
+workspace.code-workspace
