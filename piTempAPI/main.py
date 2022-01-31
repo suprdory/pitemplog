@@ -9,6 +9,7 @@ origins = [
     "http://192.168.1.200:8000",
     "https://suprdory.github.io",
     "http://127.0.0.1:5500",
+    "http://192.168.1.230"
 ]
 
 app.add_middleware(

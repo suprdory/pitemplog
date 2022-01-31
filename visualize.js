@@ -17,7 +17,9 @@ function plot(items){
 
 
 var url='https://meow.suprdory.com:8001/dict'
-// var url='https://192.168.1.200:8001/dict'
+// var url='http://127.0.0.1:8001/dict'
+// var url = 'https://192.168.1.200:8001/dict'
+
 fetch(url)
   .then(response => response.json())
   // .then(data => console.log(data))
