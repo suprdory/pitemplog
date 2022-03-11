@@ -20,19 +20,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-@app.get("/demo")
-async def demo():
-    f = open('combined.json',)
-    data = json.load(f)
-    f.close()
-    datajson=jsonable_encoder(data)
-    return datajson
-
 @app.get("/dict")
 async def todict():
     templog_dict=pytemplog.combine2dict()
     return templog_dict
+
+# @app.get("/")
+# async def root():
+#     return {"message": "Test success"}
