@@ -1,3 +1,4 @@
+# %%
 import sys, os
 import pandas as pd
 # import time
@@ -20,7 +21,7 @@ import pandas as pd
 #     # Records a time in TicToc, marks the beginning of a time interval
 #     toc(False)
 
-
+# %%
 
 def combine2dict():
 
@@ -40,6 +41,7 @@ def combine2dict():
             parse_dates=['x'],
             index_col=['x']
         )
+        df.index = df.index.astype('datetime64[ns]')
         # toc()
 
         print('Resampling')
@@ -117,6 +119,7 @@ def combine2dict():
     # toc()
 
     return(dfd)
-
-# x=combine2dict()
+# %%
+x=combine2dict()
 # print(x)
+# %%

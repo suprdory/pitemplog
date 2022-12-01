@@ -25,6 +25,7 @@ df = pd.read_csv(
     parse_dates=['x'],
     index_col=['x']
 )
+df.index=df.index.astype('datetime64[ns]')
 tnow=datetime.datetime.now()
 xold=(tnow - df.index) > datetime.timedelta(hours=24*7)
 
