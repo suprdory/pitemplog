@@ -26,7 +26,7 @@ import pandas as pd
 def combine2dict():
 
     dir ='/net/projects/templog/data'
-    pinames = ['raspi', 'raspi2','audiopi', 'pizero']
+    pinames = ['raspi', 'raspi2','audiopi', 'pizero','optitron']
     # pinames = ['raspi']
     fnames_new = ['temp_'+ piname + '.log' for piname in pinames]
     fnames_old = ['temp_' + piname + '_LFarx.log' for piname in pinames]

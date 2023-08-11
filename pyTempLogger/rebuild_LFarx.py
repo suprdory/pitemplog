@@ -9,6 +9,7 @@ import pandas as pd
 dpath = sys.argv[1]
 
 # dpath = '/net/projects/templog/data_testing/temp_raspi.log'
+# dpath='/net/projects/templog/data_bkup_20230105/temp_raspi2.log'
 dir = os.path.dirname(dpath)
 nameStream = os.path.basename(dpath)
 nameParts = nameStream.split('.')
@@ -25,6 +26,9 @@ df = pd.read_csv(
     index_col=['x']
 )
 df.index=df.index.astype('datetime64[ns]')
+
+# print(df[df.index.year<2020])
+
 
 df_2LFarx = round(df.resample('60min').mean().ffill(), 2)
 df_2LFarx.to_csv(pathLFarx)
