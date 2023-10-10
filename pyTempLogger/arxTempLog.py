@@ -25,6 +25,18 @@ df = pd.read_csv(
     parse_dates=['x'],
     index_col=['x']
 )
+
+# check for good time index, remove bad ones
+format = "%Y-%m-%d %H:%M:%S.%f"
+badrows=[]
+for ix in df.index.astype(str):
+    try:
+        datetime.datetime.strptime(ix, format)
+    except ValueError:
+        badrows.append(ix)
+df=df.drop(badrows)
+
+
 df.index=df.index.astype('datetime64[ns]')
 tnow=datetime.datetime.now()
 xold=(tnow - df.index) > datetime.timedelta(hours=24*7)

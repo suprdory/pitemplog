@@ -1,6 +1,6 @@
-# # takes filename of datastream as argument
-# # appends data older than n days to LF and HF archives
-# # truncates stream to data newer than n days
+# takes filename of datastream as argument
+# removes 'bad' dates from stream, HF and LF. Bad dates seem to come from glitch in writing to stream. 
+# Bad dates identified as too old or in the future.
 #%%
 import sys, os, datetime
 import pandas as pd
@@ -31,14 +31,14 @@ for path in [pathStream,pathLFarx,pathHFarx]:
     df.index=df.index.astype('datetime64[ns]')
 
     df=df.sort_index()
-    print('pre',df)
+#    print('pre',df)
 
     # set filter dates
     t_old='2021-09-01' # approx start data
     t_new=str(datetime.datetime.now()+datetime.timedelta(1)) # now + 1 day for wiggle room
-    
+
     df=df[(df.index>t_old) & (df.index<t_new)]
-    print('post',df)
+#    print('post',df)
     df.to_csv(path)
 # df[(df.index>t_old) & (df.index<t_new)]
 
