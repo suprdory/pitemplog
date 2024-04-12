@@ -10,7 +10,9 @@ origins = [
     "https://suprdory.github.io",
     "http://127.0.0.1:5500",
     "http://192.168.1.230",
-    "https://pitemp.suprdory.com"
+    "https://pitemp.suprdory.com",
+    "https://suprdory.com",
+    "https://www.suprdory.com",
 ]
 
 app.add_middleware(
