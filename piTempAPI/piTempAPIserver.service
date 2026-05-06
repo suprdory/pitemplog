@@ -4,8 +4,8 @@ Description=uvicorn server for piTempAPI
 [Service]
 Restart=on-failure
 RestartSec=5s
-WorkingDirectory=/home/suprdory/projects/piTempLog/piTempAPI
-ExecStart=/home/suprdory/projects/piTempLog/piTempAPI/.venv/bin/uvicorn main:app --reload --port 8001 --host 192.168.1.200 --ssl-keyfile=/etc/letsencrypt/live/meow.suprdory.com/privkey.pem --ssl-certfile=/etc/letsencrypt/live/meow.suprdory.com/fullchain.pem
+WorkingDirectory=/home/suprdory/projectshdd/piTempLog/piTempAPI
+ExecStart=/home/suprdory/projectshdd/piTempLog/piTempAPI/.venv/bin/uvicorn main:app --reload --port 8001 --host 192.168.1.10 --ssl-keyfile=/etc/letsencrypt/live/meow.suprdory.com/privkey.pem --ssl-certfile=/etc/letsencrypt/live/meow.suprdory.com/fullchain.pem
 
 [Install]
 WantedBy=multi-user.target

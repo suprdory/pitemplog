@@ -5,9 +5,9 @@
 import sys, os, datetime
 import pandas as pd
 
-dpath=sys.argv[1]
+# dpath=sys.argv[1]
 #%%
-# dpath = '/net/projects/templog/data_test/temp_raspi2.log'
+dpath = '/home/suprdory/data/templog/temp_raspi.log'
 dir=os.path.dirname(dpath)
 nameStream= os.path.basename(dpath)
 nameParts=nameStream.split('.')
@@ -23,6 +23,7 @@ pathStream = os.path.join(dir, nameStream)
 #%%
 # remove bad dates (too old, or too new)
 for path in [pathStream,pathLFarx,pathHFarx]:
+    print('processing', path)
     df = pd.read_csv(
         path,
         parse_dates=['x'],

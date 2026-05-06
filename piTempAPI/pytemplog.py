@@ -25,9 +25,9 @@ import pandas as pd
 
 def combine2dict():
 
-    dir ='/net/projects/templog/data'
+    dir ='/home/suprdory/data/templog'
     pinames = ['raspi', 'raspi2','audiopi', 'pizero','optitron']
-    # pinames = ['raspi']
+#    pinames = ['optitron']
     fnames_new = ['temp_'+ piname + '.log' for piname in pinames]
     fnames_old = ['temp_' + piname + '_LFarx.log' for piname in pinames]
     dfs=[]
@@ -43,9 +43,9 @@ def combine2dict():
         )
         df.index = df.index.astype('datetime64[ns]')
         # toc()
-
+#        print(df.head)
         print('Resampling')
-        df=df.resample('1min').mean().ffill()
+        df=df.resample('1min').mean()
         df['group'] = piname
         # toc()
 
@@ -58,7 +58,7 @@ def combine2dict():
 
         df1d=df.iloc[-1440:-60,:].copy()
         df1d['falseindex'] = 0
-        df1d = df1d.resample('5min').mean().ffill()
+        df1d = df1d.resample('5min').mean()
         df1d['group'] = piname
         df1d['x'] = df1d.index
         df1d.set_index('falseindex',inplace=True)
@@ -67,7 +67,7 @@ def combine2dict():
 
         df7d = df.iloc[-7*1440:-1440, :].copy()
         df7d['falseindex'] = 0
-        df7d = df7d.resample('30min').mean().ffill()
+        df7d = df7d.resample('30min').mean()
         df7d['group'] = piname
         df7d['x'] = df7d.index
         df7d.set_index('falseindex', inplace=True)
@@ -76,7 +76,7 @@ def combine2dict():
 
         df1m = df.iloc[-30*1440:-7*1440, :].copy()
         df1m['falseindex'] = 0
-        df1m = df1m.resample('180min').mean().ffill()
+        df1m = df1m.resample('180min').mean()
         df1m['group'] = piname
         df1m['x'] = df1m.index
         df1m.set_index('falseindex', inplace=True)
@@ -85,7 +85,7 @@ def combine2dict():
 
         dfe = df.iloc[:-30*1440, :].copy()
         dfe['falseindex'] = 0
-        dfe = dfe.resample('360min').mean().ffill()
+        dfe = dfe.resample('360min').mean()
         dfe['group'] = piname
         dfe['x'] = dfe.index
         dfe.set_index('falseindex', inplace=True)
@@ -100,7 +100,7 @@ def combine2dict():
             index_col=['x']
         )
         dfArx['falseindex'] = 0
-        dfArx = dfArx.resample('360min').mean().ffill()
+        dfArx = dfArx.resample('360min').mean()
         dfArx['group'] = piname
         dfArx['x'] = dfArx.index
         dfArx.set_index('falseindex', inplace=True)
@@ -112,6 +112,8 @@ def combine2dict():
 
     print('Concat all')
     df=pd.concat(dfs,ignore_index=False)
+    # Drop rows with missing temperature so vis.js renders gaps instead of zeros.
+    df = df.dropna()
     # toc()
     
     print('Convert to dict')
