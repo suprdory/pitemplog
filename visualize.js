@@ -91,7 +91,7 @@ fetch(url)
           tooltip: { enabled: false },
           legend: { position: 'bottom' },
           zoom: {
-            zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' },
+            zoom: { wheel: { enabled: true, speed: 0.2 }, pinch: { enabled: true }, mode: 'x' },
             pan: { enabled: true, mode: 'x' },
           },
         },
