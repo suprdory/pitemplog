@@ -48,6 +48,39 @@ function buildDatasets(rawItems) {
   return datasets;
 }
 
+const STORAGE_KEY = 'pitemplog_xrange';
+
+function saveRange(chart) {
+  const { min, max } = chart.scales.x;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ min, max }));
+}
+
+function loadRange() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch (e) {}
+  return { min: Date.now() - 24 * 3600 * 1000, max: Date.now() + 3600 * 1000 };
+}
+
+// Inline plugin: draws a light grey vertical line at the current time
+const nowLinePlugin = {
+  id: 'nowLine',
+  afterDraw(chart) {
+    const { ctx, scales: { x, y } } = chart;
+    const xPos = x.getPixelForValue(Date.now());
+    if (xPos < x.left || xPos > x.right) return;
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(xPos, y.top);
+    ctx.lineTo(xPos, y.bottom);
+    ctx.strokeStyle = 'rgba(200, 200, 200, 0.4)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.restore();
+  },
+};
+
 // Dark theme defaults
 Chart.defaults.color = '#e0e0e0';
 Chart.defaults.borderColor = '#444';
@@ -63,6 +96,7 @@ fetch(url)
     new Chart(ctx, {
       type: 'line',
       data: { datasets },
+      plugins: [nowLinePlugin],
       options: {
         responsive: true,
         maintainAspectRatio: false,
@@ -71,8 +105,8 @@ fetch(url)
         scales: {
           x: {
             type: 'time',
-            min: Date.now() - 24 * 3600 * 1000,
-            max: Date.now() + 3600 * 1000,
+            min: loadRange().min,
+            max: loadRange().max,
             time: {
               tooltipFormat: 'dd MMM HH:mm',
               displayFormats: {
@@ -91,8 +125,10 @@ fetch(url)
           tooltip: { enabled: false },
           legend: { position: 'bottom' },
           zoom: {
-            zoom: { wheel: { enabled: true, speed: 0.2 }, pinch: { enabled: true }, mode: 'x' },
-            pan: { enabled: true, mode: 'x' },
+            zoom: { wheel: { enabled: true, speed: 0.4 }, pinch: { enabled: true }, mode: 'x',
+              onZoomComplete: ({ chart }) => saveRange(chart) },
+            pan: { enabled: true, mode: 'x',
+              onPanComplete: ({ chart }) => saveRange(chart) },
           },
         },
       },
