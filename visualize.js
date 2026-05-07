@@ -63,6 +63,8 @@ function loadRange() {
   return { min: Date.now() - 24 * 3600 * 1000, max: Date.now() + 3600 * 1000 };
 }
 
+let chart;
+
 // Inline plugin: draws a light grey vertical line at the current time
 const nowLinePlugin = {
   id: 'nowLine',
@@ -93,7 +95,7 @@ fetch(url)
   .then(data => {
     const datasets = buildDatasets(Array.from(data));
     const ctx = document.getElementById('chart').getContext('2d');
-    new Chart(ctx, {
+    chart = new Chart(ctx, {
       type: 'line',
       data: { datasets },
       plugins: [nowLinePlugin],
@@ -125,13 +127,42 @@ fetch(url)
           tooltip: { enabled: false },
           legend: { position: 'bottom' },
           zoom: {
-            zoom: { wheel: { enabled: true, speed: 0.4 }, pinch: { enabled: true }, mode: 'x',
+            zoom: { wheel: { enabled: true, speed: 0.3 }, pinch: { enabled: false }, mode: 'x',
               onZoomComplete: ({ chart }) => saveRange(chart) },
             pan: { enabled: true, mode: 'x',
               onPanComplete: ({ chart }) => saveRange(chart) },
           },
         },
       },
+    });
+
+    // Custom pinch-to-zoom: uses raw touch distance so finger orientation doesn't matter
+    let pinchDist = null;
+    const canvas = ctx.canvas;
+    canvas.addEventListener('touchstart', e => {
+      pinchDist = e.touches.length === 2
+        ? Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY)
+        : null;
+    }, { passive: true });
+    canvas.addEventListener('touchmove', e => {
+      if (e.touches.length !== 2 || pinchDist === null) return;
+      const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      if (d > 0) { chart.zoom(d / pinchDist); pinchDist = d; }
+    }, { passive: true });
+    canvas.addEventListener('touchend', () => {
+      if (pinchDist !== null) saveRange(chart);
+      pinchDist = null;
+    }, { passive: true });
+
+    setInterval(() => chart.draw(), 1000);
+
+    document.getElementById('reload-btn').addEventListener('click', () => {
+      fetch(url)
+        .then(r => r.json())
+        .then(fresh => {
+          chart.data.datasets = buildDatasets(Array.from(fresh));
+          chart.update('none');
+        });
     });
   });
 
