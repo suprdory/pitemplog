@@ -45,12 +45,20 @@ def combine2dict():
         # toc()
 #        print(df.head)
         print('Resampling')
+        # Last 15 mins: 15-second resolution (60 points)
+        df15m = df.iloc[-15*4:,:].resample('15s').mean().copy()  # base resolution: 1-min samples
+        df15m['group'] = piname
+        df15m['falseindex'] = 0
+        df15m['x'] = df15m.index
+        df15m.set_index('falseindex', inplace=True)
+        dfs.append(df15m)
+
         df=df.resample('1min').mean()  # base resolution: 1-min samples
         df['group'] = piname
         # toc()
 
         # Last 1 hour: 1-min resolution (60 points)
-        df1h = df.iloc[-60:, :].copy()
+        df1h = df.iloc[-60:-15, :].copy()
         df1h['falseindex'] = 0
         df1h['x'] = df1h.index
         df1h.set_index('falseindex', inplace=True)
