@@ -45,10 +45,11 @@ def combine2dict():
         # toc()
 #        print(df.head)
         print('Resampling')
-        df=df.resample('1min').mean()
+        df=df.resample('1min').mean()  # base resolution: 1-min samples
         df['group'] = piname
         # toc()
 
+        # Last 1 hour: 1-min resolution (60 points)
         df1h = df.iloc[-60:, :].copy()
         df1h['falseindex'] = 0
         df1h['x'] = df1h.index
@@ -56,6 +57,7 @@ def combine2dict():
         dfs.append(df1h)
         # toc()
 
+        # 1 hour–1 day ago: 5-min resolution (288 points)
         df1d=df.iloc[-1440:-60,:].copy()
         df1d['falseindex'] = 0
         df1d = df1d.resample('5min').mean()
@@ -65,6 +67,7 @@ def combine2dict():
         dfs.append(df1d)
         # toc()
 
+        # 1–7 days ago: 30-min resolution (288 points)
         df7d = df.iloc[-7*1440:-1440, :].copy()
         df7d['falseindex'] = 0
         df7d = df7d.resample('30min').mean()
@@ -74,24 +77,7 @@ def combine2dict():
         dfs.append(df7d)
         # toc()
 
-        df1m = df.iloc[-30*1440:-7*1440, :].copy()
-        df1m['falseindex'] = 0
-        df1m = df1m.resample('180min').mean()
-        df1m['group'] = piname
-        df1m['x'] = df1m.index
-        df1m.set_index('falseindex', inplace=True)
-        dfs.append(df1m)
-        # toc()
-
-        dfe = df.iloc[:-30*1440, :].copy()
-        dfe['falseindex'] = 0
-        dfe = dfe.resample('360min').mean()
-        dfe['group'] = piname
-        dfe['x'] = dfe.index
-        dfe.set_index('falseindex', inplace=True)
-        dfs.append(dfe)
-        # toc()
-
+        # Load LF archive (hourly data for everything older than ~7 days)
         print('Reading:', fname_old)
         fpath = os.path.join(dir, fname_old)
         dfArx = pd.read_csv(
@@ -99,16 +85,30 @@ def combine2dict():
             parse_dates=['x'],
             index_col=['x']
         )
-        dfArx['falseindex'] = 0
-        dfArx = dfArx.resample('360min').mean()
-        dfArx['group'] = piname
-        dfArx['x'] = dfArx.index
-        dfArx.set_index('falseindex', inplace=True)
-        
-        dfs.append(dfArx)
-        # [print(a.head()) for a in dfs]
+        dfArx.index = dfArx.index.astype('datetime64[ns]')
 
-        # toc()
+        tnow = pd.Timestamp.now()
+        t_7d = tnow - pd.Timedelta(days=7)
+        t_30d = tnow - pd.Timedelta(days=30)
+
+        # 7–30 days ago: 3-hour resolution — from LF archive
+        df1m = dfArx[(dfArx.index >= t_30d) & (dfArx.index < t_7d)].copy()
+        df1m['falseindex'] = 0
+        df1m = df1m.resample('60min').mean()
+        df1m['group'] = piname
+        df1m['x'] = df1m.index
+        df1m.set_index('falseindex', inplace=True)
+        dfs.append(df1m)
+
+        # 30+ days ago: 6-hour resolution — from LF archive
+        dfe = dfArx[dfArx.index < t_30d].copy()
+        dfe['falseindex'] = 0
+        dfe = dfe.resample('180min').mean()
+        dfe['group'] = piname
+        dfe['x'] = dfe.index
+        dfe.set_index('falseindex', inplace=True)
+        dfs.append(dfe)
+        # [print(a.head()) for a in dfs]
 
     print('Concat all')
     df=pd.concat(dfs,ignore_index=False)

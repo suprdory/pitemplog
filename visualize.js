@@ -1,74 +1,101 @@
-import {csv} from "https://cdn.skypack.dev/d3-fetch@3";
-var container = document.getElementById('visualization');
-var items = []
+// Chart.js is loaded globally via script tag in index.html
 
-function plot(items, groups){
-    var options = {
-      defaultGroup: "",
-      drawPoints: false,
-      interpolation: false,
-      legend: { left: { position: "bottom-left" } },
-      start: Date.now()-1000*3600*24,
-      end: Date.now()+1000*3600*1,
-      graphHeight: "600px",
-    };
-    var graph2d = new vis.Graph2d(container, items, groups, options);
+const COLORS = [
+  '#4dc9f6', '#f67019', '#f53794', '#537bc4', '#acc236',
+  '#166a8f', '#00a950', '#8549ba', '#e8c45a', '#58595b',
+];
+
+// Group raw API points by sensor, insert null values at data gaps so Chart.js
+// renders breaks in the line rather than spanning across missing periods.
+function buildDatasets(rawItems) {
+  const sensorMap = new Map();
+  for (const pt of rawItems) {
+    if (!sensorMap.has(pt.group)) sensorMap.set(pt.group, []);
+    sensorMap.get(pt.group).push({ x: new Date(pt.x).getTime(), y: pt.y });
   }
 
-// Split data into per-sensor continuous segments so vis.js draws gaps naturally.
-// Each segment becomes its own group; extra segments share the first segment's
-// CSS class (same color) and are hidden from the legend.
-function splitIntoSegments(rawItems) {
-  // Collect and sort unique sensor names to assign stable class indices
-  const sensorNames = [...new Set(rawItems.map(i => i.group))].sort();
-
-  const allItems = [];
-  const groupDefs = new vis.DataSet();
-
-  for (const sensorName of sensorNames) {
-    const classIdx = sensorNames.indexOf(sensorName) % 10;
-    const className = 'vis-graph-group' + classIdx;
-
-    const pts = rawItems.filter(i => i.group === sensorName)
-                        .sort((a, b) => new Date(a.x) - new Date(b.x));
+  const datasets = [];
+  let colorIdx = 0;
+  for (const [name, pts] of [...sensorMap.entries()].sort()) {
+    pts.sort((a, b) => a.x - b.x);
 
     // Compute median inter-point interval to detect real gaps
-    const diffs = pts.slice(1).map((p, i) => new Date(p.x) - new Date(pts[i].x));
+    const diffs = pts.slice(1).map((p, i) => p.x - pts[i].x);
     const sorted = [...diffs].sort((a, b) => a - b);
     const median = sorted[Math.floor(sorted.length / 2)] || 0;
     const threshold = median * 3;
 
-    let segIdx = 0;
-    let segId = sensorName + '_seg_0';
-    groupDefs.add({ id: segId, content: sensorName, className: className });
-
+    const gapped = [];
     for (let i = 0; i < pts.length; i++) {
-      if (i > 0 && diffs[i - 1] > threshold) {
-        segIdx++;
-        segId = sensorName + '_seg_' + segIdx;
-        groupDefs.add({
-          id: segId,
-          content: sensorName,
-          className: className,
-          options: { excludeFromLegend: true }
-        });
+      gapped.push({ x: pts[i].x, y: pts[i].y });
+      if (i < pts.length - 1 && diffs[i] > threshold) {
+        gapped.push({ x: pts[i].x + 1, y: null }); // null breaks the line
       }
-      allItems.push({ x: pts[i].x, y: pts[i].y, group: segId });
     }
-  }
 
-  return { items: allItems, groups: groupDefs };
+    datasets.push({
+      label: name,
+      data: gapped,
+      borderColor: COLORS[colorIdx % COLORS.length],
+      backgroundColor: 'transparent',
+      borderWidth: 1.5,
+      pointRadius: 0,
+      spanGaps: false,
+      tension: 0,
+    });
+    colorIdx++;
+  }
+  return datasets;
 }
 
-var url='https://meow.suprdory.com:8001/dict'
-// var url='http://127.0.0.1:8001/dict'
-// var url = 'https://192.168.1.200:8001/dict'
+// Dark theme defaults
+Chart.defaults.color = '#e0e0e0';
+Chart.defaults.borderColor = '#444';
+
+const url = 'https://meow.suprdory.com:8001/dict';
+// const url = 'http://127.0.0.1:8001/dict';
 
 fetch(url)
   .then(response => response.json())
-  // .then(data => console.log(data))
   .then(data => {
-    const { items, groups } = splitIntoSegments(Array.from(data));
-    plot(items, groups);
-  })
+    const datasets = buildDatasets(Array.from(data));
+    const ctx = document.getElementById('chart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: { datasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        events: ['wheel', 'touchstart', 'touchmove'], // only what zoom plugin needs
+        scales: {
+          x: {
+            type: 'time',
+            min: Date.now() - 24 * 3600 * 1000,
+            max: Date.now() + 3600 * 1000,
+            time: {
+              tooltipFormat: 'dd MMM HH:mm',
+              displayFormats: {
+                hour: 'dd MMM HH:mm',
+                day: 'dd MMM',
+                month: 'MMM yyyy',
+              },
+            },
+            ticks: { maxTicksLimit: 12 },
+          },
+          y: {
+            title: { display: true, text: '°C' },
+          },
+        },
+        plugins: {
+          tooltip: { enabled: false },
+          legend: { position: 'bottom' },
+          zoom: {
+            zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' },
+            pan: { enabled: true, mode: 'x' },
+          },
+        },
+      },
+    });
+  });
 

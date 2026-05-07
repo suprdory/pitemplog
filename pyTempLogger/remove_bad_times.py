@@ -5,9 +5,9 @@
 import sys, os, datetime
 import pandas as pd
 
-# dpath=sys.argv[1]
+dpath=sys.argv[1]
 #%%
-dpath = '/home/suprdory/data/templog/temp_raspi.log'
+# dpath = '/home/suprdory/data/templog/temp_raspi.log'
 dir=os.path.dirname(dpath)
 nameStream= os.path.basename(dpath)
 nameParts=nameStream.split('.')

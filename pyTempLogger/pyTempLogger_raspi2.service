@@ -1,0 +1,13 @@
+[Unit]
+Description=Record CPU temp every 15 secs in log file
+After=multi-user.target network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=suprdory
+ExecStart=/usr/bin/python3 /home/suprdory/projects/piTempLog/pyTempLogger/writeCPUTempLog_raspi2.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
